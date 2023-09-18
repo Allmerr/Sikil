@@ -20,6 +20,7 @@ use App\Http\Controllers\TingkatPendidikanController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\NotifikasiController;
 use App\Http\Controllers\EmailConfigurationController;
+use App\Http\Controllers\ShortlinkController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -185,5 +186,7 @@ Route::get('/notifikasi', [NotifikasiController::class, 'index'])->name('notifik
 Route::get('/notifikasi/fetch', [NotifikasiController::class, 'fetch'])->name('notifikasi.fetch');
 Route::get('/notifikasi/{id_notifikasi}/detail', [NotifikasiController::class, 'detail'])->name('notifikasi.detail');
 
-Route::get('/email-configuration', [EmailConfigurationController::class, 'show'])->name('emailConfiguration.show');
- Route::post('/email-configuration', [EmailConfigurationController::class, 'update'])->name('emailConfiguration.update');
+Route::get('/email-configuration', [EmailConfigurationController::class, 'show'])->name('emailConfiguration.show')->middleware('isAdmin');
+Route::post('/email-configuration', [EmailConfigurationController::class, 'update'])->name('emailConfiguration.update')->middleware('isAdmin');
+
+Route::resource('/shortlink', ShortlinkController::class);

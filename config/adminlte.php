@@ -390,6 +390,11 @@ return [
             ],
         ],
         [
+            'icon' => 'fas fa-qrcode',
+            'text' => 'Shortlink / QR Code',
+            'route' => 'shortlink.index',
+        ],
+        [
             'icon' => 'fas fa-user-cog',
             'text' => 'Menu Master',
             'can' => 'isAdmin',
@@ -439,6 +444,11 @@ return [
                 [
                     'text' => 'General Setting',
                     'url' => '/generalsetting',
+                    'can' => 'isAdmin',
+                ],
+                [
+                    'text' => 'Email Configuration',
+                    'route' => 'emailConfiguration.show',
                     'can' => 'isAdmin',
                 ],
             ],
