@@ -20,7 +20,7 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="form-group" >    
+                        <div class="form-group" >
                             <label for="jenis_perizinan">Jenis Perizinan</label>&nbsp;&nbsp;
                             <select class="form-select" id="jenis_perizinan" name="jenis_perizinan">
                             <option value="all">Semua Jenis Perizinan</option>
@@ -47,15 +47,15 @@
                         </div>
                     </div>
                 </form>
-                
+
                 @can('isAdmin')
                 <button type="button" class="btn btn-primary mb-2" data-toggle="modal" data-target="#modal_form"
                     role="dialog">
                     Tambah
                 </button>
                 @endcan
-                                                    
-                            
+
+
                 <div class="table-responsive">
                     <table class="table table-hover table-bordered table-stripped" id="example2">
                         <thead>
@@ -69,7 +69,7 @@
                                 <th>Lampiran</th>
                                 <th>Jml Hari</th>
                                 <th>Persetujuan Atasan</th>
-                                @if(auth()->user()->level=='ppk' or auth()->user()->level=='admin')
+                                @if(auth()->user()->level=='ppk' or auth()->user()->level=='admin' or $isAllowedPpk->count() > 0)
                                 <th>Persetujuan PPK</th>
                                 @endif
                                 <th>Aksi</th>
@@ -96,7 +96,7 @@
                                 </td>
                                 <td id={{$key+1}}>{{$ap->jumlah_hari_pengajuan}}</td>
                                 <td id={{$key+1}}>
-                                    @if($ap->id_atasan == auth()->user()->id_users or auth()->user()->level=='admin')
+                                    @if($ap->id_atasan == auth()->user()->id_users or auth()->user()->level=='admin' or $isAllowedPpk->count() > 0)
                                         @if ($ap->status_izin_atasan === null)
                                         Menunggu Persetujuan
                                         @elseif ($ap->status_izin_atasan === '1')
@@ -115,7 +115,7 @@
                                     @endif
 
                                 </td>
-                                @if (auth()->user()->level == 'ppk' || auth()->user()->level == 'admin')
+                                @if (auth()->user()->level == 'ppk' || auth()->user()->level == 'admin' or $isAllowedPpk->count() > 0)
                                 <td id="{{ $key + 1 }}">
                                         @if ($ap->jenis_perizinan === 'I')
                                         <b></b>
@@ -262,7 +262,7 @@
                                                 @endif
                                                 <div class="form-group">
                                                     <label for="file_perizinan">Unggah Lampiran</label>
-                                                    
+
                                                     <input type="file" class="form-control @error('file_perizinan') is-invalid @enderror" id="file_perizinan" name="file_perizinan" onchange="validateFile(this)">
                                                     <div class="invalid-feedback" id="fileError" style="display: none;">Tipe file tidak valid. Harap unggah file dengan ekstensi yang diizinkan.</div>
                                                     @error('file_perizinan')
@@ -282,7 +282,7 @@
                                                     <label for="status_izin_atasan">Persetujuan Atasan</label>
                                                     <div class="input">
                                                         <input type="radio" name="status_izin_atasan" value="1" @if ($ap->status_izin_atasan === '1') checked @endif>  Disetujui<br>
-                                                        <input type="radio" name="status_izin_atasan" value="0" @if ($ap->status_izin_atasan === '0') checked @endif> Ditolak<br> 
+                                                        <input type="radio" name="status_izin_atasan" value="0" @if ($ap->status_izin_atasan === '0') checked @endif> Ditolak<br>
                                                     </div>
                                                 </div>
                                                 <div id="alasan_ditolak_atasan" style="display: none;" class="form-group">
@@ -292,7 +292,7 @@
 
                                                 </div>
                                                 @endif
-                                                @if(auth()->user()->level === 'admin' || auth()->user()->level === 'ppk' )
+                                                @if(auth()->user()->level === 'admin' || auth()->user()->level === 'ppk' or $isAllowedPpk->count() > 0)
                                                 @if ($ap->jenis_perizinan !== 'I')
                                                 <div class="form-group">
                                                     <label for="status_izin_ppk">Persetujuan PPK</label>
@@ -310,7 +310,7 @@
                                                         cols="30" rows="3" class="form-control">{{ $ap->alasan_ditolak_ppk }}</textarea>
                                                 </div>
                                                 @endif
-                                            
+
                                         </div>
                                         <div class="modal-footer">
                                             <button type="submit" class="btn btn-primary">Simpan</button>
@@ -493,11 +493,11 @@ document.querySelectorAll('input[type=radio][name=status_izin_ppk]').forEach(inp
         const allowedExtensions = ['.jpeg', '.jpg', '.png', '.pdf', '.docx'];
         const fileInput = input.files[0];
         const fileErrorElement = document.getElementById('fileError');
-    
+
         if (fileInput) {
             const fileName = fileInput.name;
             const fileExtension = '.' + fileName.split('.').pop().toLowerCase();
-    
+
             if (!allowedExtensions.includes(fileExtension)) {
                 fileErrorElement.style.display = 'block';
                 input.classList.add('is-invalid');
