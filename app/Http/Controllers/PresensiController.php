@@ -19,13 +19,11 @@ class PresensiController extends Controller
 
         if ($user->level == 'admin') {
             // Fetch all work experiences for admin
-            $presensi = Presensi::where('is_deleted', '0')->whereMonth('tanggal', '=', date('m'))
-                ->whereYear('tanggal', '=', date('Y'))
+            $presensi = Presensi::where('is_deleted', '0')
                 ->get();
         } else {
             // Fetch user's own work experiences using the relationship
-            $presensi = $user->presensi()->where('is_deleted', '0')->whereMonth('tanggal', '=', date('m'))
-                ->whereYear('tanggal', '=', date('Y'))
+            $presensi = $user->presensi()->where('is_deleted', '0')
                 ->get();
         }
 
@@ -195,7 +193,7 @@ class PresensiController extends Controller
                         case 'TB':
                             $tugasBelajar++;
                             break;
-                            
+
                         case 'CAP':
                             $cap++;
                             break;
@@ -333,7 +331,7 @@ class PresensiController extends Controller
                         case 'Prajab':
                             $prajab++;
                             break;
-        
+
 
                         default:
                             // Handle any other case not covered above, if necessary.
@@ -384,7 +382,7 @@ class PresensiController extends Controller
 
     public function import(Request $request)
     {
-        
+
         Excel::import(new PresensiImport, $request->file('file')->store('presensi'));
 
         return redirect()->back()->with([
